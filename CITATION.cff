@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this code or the certificate, please cite the paper below."
+title: "A dual linear programming bound for sphere packing in dimension 36 — code and certificate"
+authors:
+  - family-names: Jumagulov
+    given-names: Rifat
+    email: jum.rifm@gmail.com
+license: MIT
+repository-code: "https://github.com/rifmj/d36-dual-bound"
+keywords:
+  - sphere packing
+  - linear programming bound
+  - Cohn-Elkies
+  - modular forms
+  - exact arithmetic
+preferred-citation:
+  type: article
+  title: "A dual linear programming bound for sphere packing in dimension 36"
+  authors:
+    - family-names: Jumagulov
+      given-names: Rifat
+  year: 2026

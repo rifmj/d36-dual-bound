@@ -1,0 +1,22 @@
+== b-side (g~) ==
+  gamma=1 : c_E = +2.7491718e-13  POS
+  gamma=2 : c_E = +2.7491728e-13  POS
+  gamma=3 : c_E = +3.0197203e-15  POS
+  gamma=4 : c_E = +5.4705876e-14  POS
+  gamma=6 : c_E = +7.0898273e-13  POS
+  gamma=8 : c_E = +6.2718713e-14  POS
+  gamma=12: c_E = +4.8875838e-13  POS
+  gamma=24: c_E = +4.9677122e-13  POS
+  MIN gamma=3: 3.0197202951e-15;  n0=(2*0.358807778339/c_E)^(1/8)=62.6600 -> ceil 63
+
+== a-side (g) ==
+  gamma=1 : c_E = +2.5557123e-11  POS
+  gamma=2 : c_E = +4.7311065e-11  POS
+  gamma=3 : c_E = +5.0672218e-12  POS
+  gamma=4 : c_E = +2.9217853e-11  POS
+  gamma=6 : c_E = +2.6829756e-11  POS
+  gamma=8 : c_E = +2.9217959e-11  POS
+  gamma=12: c_E = +8.7365434e-12  POS
+  gamma=24: c_E = +8.7366497e-12  POS
+  MIN gamma=3: 5.0672217529e-12;  n0=(2*0.30632933353/c_E)^(1/8)=24.2832 -> ceil 25
+

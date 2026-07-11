@@ -1,0 +1,11 @@
+# Verified environment for the d=36 dual-bound certificate.
+# Exact verification (d36_cs_certificate.py, d36_guarded_cE.py, d36_cusp_reconstruct.py)
+# uses only sympy / mpmath / fractions (stdlib). numpy + scipy are required ONLY by the
+# floating-point LP heuristic used during CONSTRUCTION (ct_dual_d36.py: scipy.optimize.linprog,
+# basis selection via scipy.linalg.qr); they are NOT used in the exact rigor pass.
+#
+# Pinned to the versions the certificate was reproduced on (Python 3.11.15).
+sympy==1.14.0
+mpmath==1.4.1
+numpy==2.4.6
+scipy==1.17.1

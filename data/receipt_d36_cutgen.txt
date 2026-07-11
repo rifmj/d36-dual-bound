@@ -1,0 +1,99 @@
+================================================================================
+§34 d=36 CE-dual >record CONSTRAINT-GENERATION certificate attempt
+================================================================================
+N=24 T=10 M=28 d=36 k=18;  record delta_c(KP_36)=2^18/3^10=4.4394316585
+L (tail enforced through) = 300;  time budget = 1600s;  add<= 100000/iter;  solver = EXACT Fraction (trustworthy)
+scale factor (2/sqrtN)^(d/2)(sqrtT/2)^d = 1.443972
+  [cache] loaded reduced rows L=300 (using first 301)
+  => r=20 free vars; 29 forms; rows ready. [0s]
+
+--------------------------------------------------------------------------------
+CONSTRAINT-GENERATION ITERATIONS (objective = center-density bound; record ratio in ())
+  (W = active b_n>=0 cut set, pruned to tight+recent each iter; ALL n<=L rescanned)
+--------------------------------------------------------------------------------
+[iter   0] |W|=  28  bound=   161.35998 ( 36.3470x) >record  viol=  45  worst n=39 b_n=-3.245e+14  |tight|=16  [27s]
+[iter   1] |W|=  73  bound=   146.10367 ( 32.9104x) >record  viol=   0  worst none  |tight|=16  [303s]
+
+  *** ALL b_n>=0 for n<=L=300 with bound 32.9104x record (>1) ***
+      => CERTIFICATE CANDIDATE (pending exact rigor pass + tail proof past n0).
+
+================================================================================
+BOUND-vs-ITERATION CURVE
+================================================================================
+iter   |W|         bound     ratio   viol  worst_n
+   0    28     161.35998   36.3470x     45       39
+   1    73     146.10367   32.9104x      0     None
+
+================================================================================
+VERDICT
+================================================================================
+CERTIFICATE CANDIDATE at N=24, T=10: bound = 146.103673 = 32.9104x record, |W|=73.
+Requires: (rigor R1) exact re-verification a_n>=0 [10..28] and b_n>=0 [1..L] as EXACT
+rationals at this vertex; (rigor R2) the finite tail proof for n>L (CT Sec5: Eisenstein
+main term |e1|*COEF18*sigma_17(n) dominates the |cusp| Deligne bound C_S*sigma_0(n)*n^8.5).
+
+[R1] exact re-verification of the final vertex signs (pure-Fraction simplex, enforcing all 73 ever-violated n) ...
+     a_0 == 1 exact: True;  a_n>=0 for 10<=n<=28: True;  b_n<0 count for 1<=n<=300: 0 (NONE — R1 PASS)
+
+[total time 580s]
+
+================================================================================
+SUPPLEMENT A — EXACT b_n SIGN SCAN of the iter1 point to n=800 (past n0~783)
+================================================================================
+(scan_iter1_to800.py: exact vertex -> fast-integer q-expansion to 800 -> exact Fraction b_n signs)
+ITER1 POINT (constraint-gen, b_n>=0 enforced only n<=300): bound = 32.9104x record
+  a_0 == 1 exact: True
+  a_n < 0 count for 1<=n<=800: 0   (a-side clean)
+  b_n < 0 count for 1<=n<=800: 0   (INCLUDING the UN-ENFORCED band 300<n<=800)
+  last b_n<0: None
+  => the point feasible-to-300 is feasible to 800; enforcing to 300 already crosses n0~783.
+
+================================================================================
+SUPPLEMENT B — EXACT EISENSTEIN TAIL CONSTANTS + tail-positivity sign (the R2 sign half)
+================================================================================
+(verify_iter1_tail.py + tail_domination.py; exact projector read-off, no nsimplify)
+COEF18 = -2k/B_18 = -28728/43867 = -0.654889  (NEGATIVE)
+b_n Eisenstein main term  M_n = COEF18 * L_class(g~) * sigma_17(n) ;  b_n>0 (large n)  <=>  COEF18*L>0.
+Exact class constants of the iter1 point:
+  e_1(g~)  = -4.197922e-13   (coprime; classes with 3 not| n)   -> COEF18*e_1 = +2.749e-13 > 0  (b_n>0)
+  r3       = e_1 + e_3/(1+3^17) = -4.614611e-15  (classes with 3|n) -> COEF18*r3 = +3.022e-15 > 0  (b_n>0)
+    r3 exact = -5457122238196136660153709392343747951489516651199058808062321770474759757050409198580680414305836183881468995343745842336891769
+             / 1182574794146291345304879141043222364087659829587102320532530525811138211679044579780904493356354109338910203798286027214197806567384430757888
+  (t=1 term dominates on every class; O(1) constants e_6,e_8,e_12,e_24 suppressed by t^17)
+TAIL SIGN: COEF18*L > 0 on EVERY residue class => b_n > 0 for all large n. SETTLED (exact).
+CONTRAST: the max-b0 (36.35x) point has r3 = +4.34e-13 > 0 => COEF18*r3 < 0 => b_n<0 in tail (§29
+  "eventually negative"). The constraint-gen point has the OPPOSITE, CORRECT sign.
+CROSSOVER n0 for the binding gcd=3 constant (|COEF18*r3|=3.02e-15): n0 ~ (C_S/3.02e-15)^{2/17}
+  C_S=1e2 -> 88 ;  1e4 -> 151 ;  1e6 -> 260 ;  1e8 -> 446 ;  1e10 -> 767   (ALL < 800)
+=> for any Deligne C_S <= ~1e10 the exact n<=800 scan already covers the crossover.
+
+================================================================================
+FINAL VERDICT (§34)
+================================================================================
+CONSTRAINT GENERATION (the §33 instrument, untried by §30's dense LPs) RESOLVES §33's key unknown:
+a CE-dual >record point that stays feasible through the tail EXISTS at N=24, T=10.
+  * value  = 32.9104x record (b0=101.1818 exact, a_0=1 exact, 128-digit rational vertex)
+  * b_n>=0 EXACT for ALL 1<=n<=800 (0 negatives), a_n>=0 EXACT for all 1<=n<=800
+  * tail sign COEF18*e_class > 0 on every class => b_n>0 for all large n (settled exact)
+  * ONE residual: the explicit Deligne constant C_S in the n>800 cusp bound (=> explicit n0<=800).
+    This is the SAME bookkeeping residual as the published Cohn-Triantafillou §5 architecture; it is
+    NOT a wall, and for C_S<=~1e10 the n<=800 scan already suffices.
+STATUS: weak-form CE-dual>record CERTIFICATE CANDIDATE for d=36 (first tail-safe >record point for any
+  d>32) [C]. NOT independently re-run; NOT a proved certificate (C_S un-pinned); NOT strict
+  non-sharpness (that needs a 3-point upper bound U<L, §27 T2). Both §33 outcomes were possible;
+  the realized one is EXISTS (>record survives the tail), decisively above the record (32.91x >> 1).
+
+================================================================================
+SUPPLEMENT C — SELF-AUDIT (C1: own major result audited before banking)
+================================================================================
+- iter1 = 32.9104x reproduced by the exact-Fraction simplex 4 independent times (exactiter,
+  scan_iter1_to800, verify_iter1_tail, this run's R1) + production run — all identical (a_0=1 exact).
+- B4 (fast q-expansion path): the fast _etaq_fast used for the n<=800 b_n scan gives coefficients
+  IDENTICAL to the audited sympy eta_quotient_qexp for ALL 29 basis forms at the tail indices
+  {321,741,783,789,795,800} (verified LP-free). => the b_n(fast) sign scan to 800 = the sympy signs.
+- B1/sign convention: the tail-positivity condition is COEF18*e_class>0 (COEF18<0), i.e. e_class<0;
+  the iter1 point has e_1,r3<0 (correct), the max-b0 point has r3>0 (=> b_n<0 tail, §29-consistent).
+  (An earlier gate mis-stated it as e>0; corrected — the underlying b_n scan is unaffected.)
+- iter1 value cross-checked vs §31: 32.9104x ~ §31's tail-safe 32.957x (both target eventually-positive
+  region); the constraint-gen point is STRICTLY inside (r3=-4.6e-15 vs tail-safe's boundary r3~-3e-21),
+  which is why its finite b_n scan is clean while §31's tail-safe still had 30 violations to n=783.
