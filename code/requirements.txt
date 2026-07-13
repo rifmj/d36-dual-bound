@@ -6,6 +6,6 @@
 #
 # Pinned to the versions the certificate was reproduced on (Python 3.11.15).
 sympy==1.14.0
-mpmath==1.4.1
+mpmath>=1.3.0
 numpy==2.4.6
 scipy==1.17.1
