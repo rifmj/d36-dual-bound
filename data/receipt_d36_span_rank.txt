@@ -1,0 +1,5 @@
+candidates: 8 Eisenstein + 3044 eta-quotients (|r|<=8) = 3052
+exact q-expansions to n<=100, reduced mod 1000000007  [21s]
+rank mod 1000000007 of the truncated candidate matrix = 72  [22s]
+dim M_18(Gamma_0(24)) = 72 (dimension formula)
+==> exact rank = 72, candidates SPAN M_18(Gamma_0(24)): CERTIFIED

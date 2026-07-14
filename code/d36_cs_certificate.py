@@ -631,13 +631,28 @@ def _alg_block_lifts_iv(block, B, H, G, maxn, probe=140):
     return lifts, e_list, Mlv
 
 
+def _iv_piv_absfloor(z):
+    """Lower bound on |z| for an interval z: 0 if the interval straddles zero."""
+    a, b = mpmath.mpf(z.a), mpmath.mpf(z.b)
+    if a <= 0 <= b:
+        return mpmath.mpf(0)
+    return min(abs(a), abs(b))
+
+
 def _iv_gauss_solve(Msys, rhs):
-    """SOUND interval Gaussian elimination for small systems (outward-rounded throughout)."""
+    """SOUND interval Gaussian elimination for small systems (outward-rounded throughout).
+    Records the minimal pivot-interval magnitude in _iv_gauss_solve.last_min_pivot
+    (pivots of the forward pass = the back-substitution divisors A[i][i]);
+    a value > 0 certifies that no pivot interval contains zero (nonsingularity of the
+    interval system, hence of every real matrix it encloses)."""
     n = len(rhs)
     A = [[Msys[i][j] for j in range(n)] for i in range(n)]
     b = [rhs[i] for i in range(n)]
+    minpiv = None
     for col in range(n):
         piv = A[col][col]
+        pf = _iv_piv_absfloor(piv)
+        minpiv = pf if minpiv is None else min(minpiv, pf)
         for i in range(col + 1, n):
             if not (A[i][col] == IV.mpf(0)):
                 f = A[i][col] / piv
@@ -650,6 +665,7 @@ def _iv_gauss_solve(Msys, rhs):
         for j in range(i + 1, n):
             s = s - A[i][j] * x[j]
         x[i] = s / A[i][i]
+    _iv_gauss_solve.last_min_pivot = minpiv
     return x
 
 
@@ -726,6 +742,38 @@ def rigorous_algebraic_remainder(B, pivots, H, G, blocks, target_c, exact_lams,
     V_iv = [[alg_lifts[j][2][chosen[i]] for j in range(nA)] for i in range(nA)]
     R_iv = [_iv_from_rat(R_q[chosen[i]]) for i in range(nA)]
     lam_iv = _iv_gauss_solve(V_iv, R_iv)                   # interval enclosures of the algebraic lambda
+    minpiv = _iv_gauss_solve.last_min_pivot                # > 0 certifies nonsingularity
+
+    # export the interval system for the independent Arb re-verification (d36_arb_check.py):
+    # V_iv endpoints are exact dyadic rationals (mpf), R rows are exact rationals.
+    try:
+        import json
+        from fractions import Fraction as _F
+        def _dy(xx):
+            sign, man, exp, _bc = mpmath.mpf(xx)._mpf_
+            v = _F(int(man)) * (_F(2) ** int(exp)) if man else _F(0)
+            v = -v if sign else v
+            return [str(v.numerator), str(v.denominator)]
+        exp_path = os.path.join(CODE, 'd36_alg_system_export.json')
+        payload = {
+            'side': getattr(rigorous_algebraic_remainder, 'export_tag', 'unknown'),
+            'chosen_rows': list(chosen),
+            'lifts': [[int(alg_lifts[j][0]), int(alg_lifts[j][1])] for j in range(nA)],
+            'V_lo': [[_dy(V_iv[i][j].a) for j in range(nA)] for i in range(nA)],
+            'V_hi': [[_dy(V_iv[i][j].b) for j in range(nA)] for i in range(nA)],
+            'R': [[str(sp.Rational(R_q[chosen[i]]).p), str(sp.Rational(R_q[chosen[i]]).q)]
+                  for i in range(nA)],
+        }
+        mode = 'r+' if os.path.exists(exp_path) else 'w'
+        try:
+            allp = json.load(open(exp_path))
+        except Exception:
+            allp = {}
+        allp[payload['side']] = payload
+        with open(exp_path, 'w') as f:
+            json.dump(allp, f)
+    except Exception as _e:
+        print(f"    [export] skipped ({_e})")
 
     # rigorous sum |lambda|_upper / e^{8.5}_lower
     total = IV.mpf(0)
@@ -738,7 +786,7 @@ def rigorous_algebraic_remainder(B, pivots, H, G, blocks, target_c, exact_lams,
         contrib = au / ewt                                 # upper/lower = outward upper
         total = total + contrib
         detail.append((Mlv, e, au, lam_iv[j]))
-    return total, nA, detail, lam_iv, chosen
+    return total, nA, detail, lam_iv, chosen, minpiv
 
 
 def rigorous_C_S_w(B, pivots, H, G, blocks, target_c, maxn, log):
@@ -770,18 +818,33 @@ def rigorous_C_S_w(B, pivots, H, G, blocks, target_c, maxn, log):
         lv = lvl1_lams[e]
         log(f"       e={e:2d}: |lambda|={mpmath.nstr(abs(float(lv)),8)}  (exact rational)")
 
-    rem, nA, detail, lam_iv, chosen = rigorous_algebraic_remainder(
+    rem, nA, detail, lam_iv, chosen, minpiv = rigorous_algebraic_remainder(
         B, pivots, H, G, blocks, target_c, exact_lams, lvl1_lams, maxn)
     log(f"    algebraic remainder (d>1 blocks, {nA} lifts): SOUND interval solve on {nA} "
         f"determining rows n in {min(chosen)}..{max(chosen)}")
+    log(f"       exact determining-row list ({nA} rows): {sorted(chosen)}")
+    log(f"       min pivot-interval magnitude in the interval Gaussian elimination: "
+        f"{mpmath.nstr(minpiv, 8)}  ( > 0 certifies no pivot interval contains zero => "
+        f"the 33x33 system is nonsingular)")
     log(f"       sum|lambda|/e^8.5 (algebraic) <= {mpmath.nstr(_hi(rem),12)} "
         f"(enclosure width {mpmath.nstr(_hi(rem)-_lo(rem),3)})")
     total = exact_part + rem
     log(f"    RIGOROUS C_S_w <= {mpmath.nstr(_hi(total),12)}  "
         f"(enclosure [{mpmath.nstr(_lo(total),12)}, {mpmath.nstr(_hi(total),12)}], "
         f"width {mpmath.nstr(_hi(total)-_lo(total),3)})")
+    # dyadic-rational OUTWARD upper endpoint (mpf endpoints are exact dyadic rationals):
+    from fractions import Fraction as _Fr
+    def _mpf_to_frac(xx):
+        sign, man, exp, _bc = mpmath.mpf(xx)._mpf_
+        if man == 0:
+            return _Fr(0)
+        v = _Fr(int(man)) * (_Fr(2) ** int(exp))
+        return -v if sign else v
+    ub = _mpf_to_frac(_hi(total))
+    log(f"    dyadic-rational OUTWARD upper bound:  C_S_w <= {ub.numerator}/{ub.denominator}")
     return {'exact_part': exact_part, 'remainder': rem, 'total': total,
-            'exact_lams': exact_lams, 'lvl1_lams': lvl1_lams, 'nA': nA}
+            'exact_lams': exact_lams, 'lvl1_lams': lvl1_lams, 'nA': nA,
+            'chosen': chosen, 'minpiv': minpiv, 'ub_frac': ub}
 
 
 # ---------------------------------------------------------------------------
@@ -1007,6 +1070,7 @@ def main():
         r = results[side]
         log("")
         log(f"--- {side}-side ---")
+        rigorous_algebraic_remainder.export_tag = side   # tag the Arb-check export
         rc = rigorous_C_S_w(B, pivots, H, G, blocks, r['target_c'], NWIN, log)
         r['rig_total'] = rc['total']
         r['rig_exact'] = rc['exact_part']

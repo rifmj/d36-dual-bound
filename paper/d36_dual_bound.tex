@@ -49,10 +49,11 @@ the two relevant $q$-expansions is proved via an explicit Deligne-type
 tail bound whose constant is certified with outward-rounded interval
 arithmetic. Two methodological points may be of independent interest: a
 constraint-generation (cutting-plane) formulation of the exact rational
-LP, which is what makes the tail-safe optimum reachable; and a sharpened,
-lift-aware form of the Deligne bookkeeping constant,
-$C=\sum_{f,e}|\lambda_{f,e}|\,e^{-(k-1)/2}$, without which the finite
-verification in dimension $36$ fails marginally.
+LP, which is what makes an exact vertex whose Eisenstein data supports
+the tail argument reachable; and a sharpened, lift-aware form of the
+Deligne bookkeeping constant that discounts deep oldform lifts, without
+which the finite verification in dimension $36$ fails (the crossover
+moves past the verified window).
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -60,7 +61,8 @@ verification in dimension $36$ fails marginally.
 The Cohn--Elkies linear programming bound \cite{CohnElkies} is the
 strongest known general upper bound on sphere packing densities in
 moderate dimensions, and it is famously sharp in dimensions $8$ and $24$
-\cite{Viazovska,CKMRV}. In every other dimension its sharpness is open,
+\cite{Viazovska,CKMRV} (and trivially sharp in dimension $1$). In
+every other dimension its sharpness is open,
 and the question splits into two inequivalent problems. Write
 $\delta_{\LP}(d)$ for the optimum of the Cohn--Elkies program
 (normalized as a center density in the sense of \cite{ConwaySloane})
@@ -80,7 +82,7 @@ and $\delta_*(d)$ for the best packing density currently known.
   $\delta_{\LP}(d)>\delta_{\max}(d)$, where $\delta_{\max}$ is the true
   optimal density. This requires, in addition to a dual lower bound
   $L\le\delta_{\LP}(d)$, an \emph{independent} upper bound
-  $U\ge\delta_{\max}(d)$ with $U<L$. At present this is known only for
+  $U\ge\delta_{\max}(d)$ with $U<L$. In the published literature this is established only for
   $d\in\{3,4,5,6,12,16\}$: for $d=12,16$ by combining the
   Cohn--Triantafillou dual points with the three-point bounds of
   Cohn--de~Laat--Salmon \cite{CdLS}, and for low dimensions by Li's dual
@@ -88,11 +90,24 @@ and $\delta_*(d)$ for the best packing density currently known.
 \end{itemize}
 
 This paper proves a statement of the first kind in dimension $36$, the
-first above $32$.
+first above $32$.\footnote{Novelty scope and search date: we searched
+(2026-07-11, re-checked 2026-07-14) for certified dual lower bounds on
+$\delta_{\LP}$ of any kind --- Cohn--Elkies-type dual-feasible
+distributions/modular-form points as in \cite{CT,dCIDV}, discrete
+reductions as in \cite{Li} --- and for LP non-sharpness claims by any
+method, in dimensions $>32$; principal sources: citation graphs of
+\cite{CT} (OpenAlex/Crossref), arXiv full-text sweeps 2019--2026, and
+Cohn's sphere-packing bounds tables and publication list. See
+\S\ref{sec:discussion} for the two
+near-misses (\cite{Zhou}, \cite{AJCHdLT}).}
 
 \begin{theorem}\label{thm:main}
-$\delta_{\LP}(36)\;\ge\;146.1036\ldots\;=\;32.9104\ldots\times
-\dfrac{2^{18}}{3^{10}}.$
+$\delta_{\LP}(36)\;\ge\;B\;=\;32.91044\ldots\times
+\dfrac{2^{18}}{3^{10}}\;>\;146.1036,$
+where $B$ is the explicit rational number given in \eqref{eq:exactB},
+with outward decimal enclosures
+$B\in[146.1036734821,\,146.1036734822]$ and
+$B/(2^{18}/3^{10})\in[32.91044546,\,32.91044547]$.
 In particular the Cohn--Elkies linear programming bound in dimension
 $36$ cannot certify the Kschischang--Pasupathy packing
 \cite{KP}, of center density $2^{18}/3^{10}=4.4394\ldots$, as an optimal
@@ -110,8 +125,8 @@ character twists are needed, and $36$ is the first dimension beyond the
 Cohn--Triantafillou table where $\dim S_{d/2}$ obstructions do not
 apply. It is also qualitatively different from the dimensions
 $\le 32$: the ratio $\delta_{\LP}/\delta_*$ is much larger (our
-certificate alone gives $32.9$; the two-point optimum is
-$\approx 52\times\delta_*$), reflecting how weak the record packing is
+certificate alone gives $32.9$; the best numerical two-point upper
+bound is $\approx 52\times\delta_*$), reflecting how weak the record packing is
 relative to the LP bound in this range. Ironically this makes the
 \emph{dual} statement stronger and the \emph{strict} question harder;
 see \S\ref{sec:discussion}.
@@ -132,8 +147,9 @@ generation}: solve the small relaxation exactly in rational arithmetic,
 evaluate all violated rows exactly, add them, and re-solve. In dimension
 $36$ this converges in a single round (all violations lie in the four
 classes above and are eliminated together), producing an exact rational
-vertex whose $q$-expansions are nonnegative far beyond the enforced
-range (\S\ref{sec:construction}).
+vertex --- within an explicitly described $29$-dimensional search
+subspace, see \S\ref{sec:space} --- whose $q$-expansions are nonnegative
+far beyond the enforced range (\S\ref{sec:construction}).
 
 Second, the eventual-positivity verification of \cite[\S5]{CT} requires
 an explicit constant $C$ with $|c_n|\le C\,\sigma_0(n)\,n^{(k-1)/2}$ for
@@ -142,8 +158,9 @@ constant --- the $\ell^1$-norm $\sum|\lambda_{f,e}|$ of the coordinates
 in the newform-lift basis --- turns out to be \emph{lossy} in a way that
 matters here: our certificate's cuspidal part is dominated ($99.7\%$ of
 the norm) by a single deep oldform lift, the $e=24$ shift of the level-one
-newform, and the na\"ive constant fails the required threshold
-marginally. The lift-aware constant
+newform, and with the na\"ive constant the crossover exceeds the
+verified window (uniform crossover $\approx1372$; even the divisor-free
+lower bound is $\approx827>800$, see \S\ref{sec:tail}). The lift-aware constant
 $C_w=\sum_{f,e}|\lambda_{f,e}|\,e^{-(k-1)/2}$
 (Lemma~\ref{lem:liftaware}), equally rigorous and elementary, is smaller
 here by ten orders of magnitude and closes the verification with a
@@ -169,7 +186,18 @@ exact Sturm isolating intervals. Independent implementations (exact
 characteristic-polynomial factorization vs.\ high-precision simultaneous
 diagonalization) produce identical constants. All code, receipts, and
 the exact certificate data are provided as ancillary files (see the
-manifest in \texttt{ancillary/MANIFEST.md}).
+manifest in \texttt{ancillary/MANIFEST.md}); a single driver,
+\texttt{ancillary/code/verify\_certificate.py}, re-runs every
+exact-data gate of the verification from the published data --- taking
+the separately certified $C_w$ upper bounds as input; their interval
+certification is re-run by \texttt{d36\_cs\_certificate.py} --- and
+prints \texttt{VERIFIED} only if every gate passes.
+Numerical-display convention, used throughout: every displayed decimal
+is either marked \emph{exact}, or is a truncation (rounded toward zero)
+of an exact rational, or an outward-rounded enclosure/upper bound
+(so for the constants $C_w$ the displays are certified upper bounds),
+or --- only in the discussion \S\ref{sec:discussion} --- an explicitly
+labeled numerical estimate.
 
 \section{The Cohn--Elkies program and its modular-form dual}
 \label{sec:dual}
@@ -225,7 +253,8 @@ displayed precision.
 
 \section{The certificate}\label{sec:construction}
 
-\subsection{The space and the reduced LP}
+\subsection{The space, the search subspace, and the reduced LP}
+\label{sec:space}
 
 $\dim M_{18}(\Gamma_0(24))=72$, with an $8$-dimensional Eisenstein
 subspace spanned by $E_{18}(\delta z)$, $\delta\mid 24$, where
@@ -234,13 +263,55 @@ E_{18}(z)=1+\kappa_{18}\sum_{n\ge1}\sigma_{17}(n)q^n,
 \qquad
 \kappa_{18}=-\frac{2k}{B_{18}}\Big|_{k=18}=-\frac{28728}{43867},
 \]
-and a $64$-dimensional cuspidal subspace. A spanning set of $72$
-linearly independent forms is obtained from the eight Eisenstein series
-together with holomorphic eta-quotients of weight $18$ and level
-dividing $24$ (Ligozat's criteria); all $q$-expansions are computed in
-exact integer arithmetic. Imposing the $9$ linear conditions
-$a_1=\dots=a_9=0$ and the normalization $a_0=1$ leaves an affine space
-of dimension $r=20$, on which we solve
+and a $64$-dimensional cuspidal subspace. Candidate forms are the eight
+Eisenstein series together with the holomorphic eta-quotients
+$\prod_{\delta\mid24}\eta(\delta z)^{r_\delta}$ of weight $18$ and
+level dividing $24$ (Ligozat's criteria) with exponent bound
+$|r_\delta|\le8$: there are $3044$ such eta-quotients, and the $3052$
+candidates span all of $M_{18}(\Gamma_0(24))$ --- an exact certificate:
+the candidate coefficient matrix truncated at $q^{100}$ has rank $72$
+modulo the prime $10^9+7$, hence exact rank $\ge72$, and $=72$ by the
+dimension formula (\texttt{d36\_span\_rank\_certify.py} and its receipt
+in the ancillary files; at $|r_\delta|\le6$ only $44$ eta-quotients
+exist, which under-span). All
+$q$-expansions used in the construction and verification are computed
+in exact integer/rational arithmetic.
+
+The linear program is \emph{not} solved over the full $72$-dimensional
+space but over an explicit $29$-dimensional subspace $V$, chosen as
+follows. The LP window below constrains the coefficients
+$a_0,\dots,a_{28}$; column-pivoted QR factorization, applied to the
+\emph{transpose} of the floating-point candidate coefficient matrix
+truncated at $q^{28}$ (i.e.\ to the $29\times3052$ matrix whose
+columns are the candidates' truncated coefficient vectors, so that the
+pivoting selects candidates), selects $29$ pivot forms --- the
+truncation has only $29$ coefficients $a_0,\dots,a_{28}$, so at most
+$29$ candidates are linearly independent in this window. The selected forms are $7$ Eisenstein series
+($E_{18}(\delta z)$, $\delta\in\{1,2,3,4,6,8,24\}$) and $22$
+eta-quotients; the full list, in pivot order (which fixes the
+coordinate system used everywhere, including the published
+certificate), is in the ancillary file
+\texttt{ancillary/certificate\_exact\_data.txt}, and $V$ is the span
+of these $29$ forms. This pivot selection is the one floating-point
+step in the construction: it only decides \emph{which} forms to use,
+and everything downstream treats the selected forms exactly.
+Restricting the search to $V\subsetneq M_{18}(\Gamma_0(24))$ can only
+weaken the bound we are able to find, never its validity:
+Theorem~\ref{thm:main} requires exhibiting one dual-feasible form, and
+feasibility of the certificate is verified unconditionally
+(\S\ref{sec:tail}).
+
+Within $V$, the $9$ homogeneous conditions $a_1=\dots=a_9=0$ cut out a
+nullspace of exact dimension $r=29-9=20$: in exact rational arithmetic,
+the $9\times29$ coefficient matrix of $(a_1,\dots,a_9)$ has rank $9$,
+and the $10\times29$ matrix of $(a_0,a_1,\dots,a_9)$ has rank $10$ ---
+so $a_0$ is not identically zero on the nullspace and the normalized
+family is nonempty (both ranks are re-certified by the verification
+driver). The LP variables are
+the $r=20$ nullspace coordinates, with the normalization $a_0=1$
+imposed as an equality constraint of the program (the feasible forms
+thus lie in a $19$-dimensional affine slice of the nullspace); in these
+variables we solve
 \begin{equation}\label{eq:lp}
 \max\ b_0
 \quad\text{s.t.}\quad
@@ -248,37 +319,68 @@ a_n\ge0\ (10\le n\le 28),\qquad
 b_n\ge0\ (n\in W),
 \end{equation}
 with a working set $W$ of Fricke-side rows, in exact rational
-arithmetic.
+arithmetic. All optimality statements in this section are relative to
+$V$: we make no claim about the optimum of \eqref{eq:lp} over the full
+space $M_{18}(\Gamma_0(24))$, and none is needed for
+Theorem~\ref{thm:main}.
 
 \subsection{Constraint generation}
 
-With $W=\{1,\dots,28\}$ the exact optimum of \eqref{eq:lp} is
-$36.3470\times 2^{18}/3^{10}$, but its Fricke expansion has $45$
+With $W=\{1,\dots,28\}$ the exact optimum of \eqref{eq:lp} (over $V$)
+is $36.3470\times 2^{18}/3^{10}$, but its Fricke expansion has $45$
 negative coefficients in $1\le n\le 300$, all in the classes
 $n\equiv3,9,15,21\  (\mathrm{mod}\ 24)$, the first at $n=33$: the
-unconstrained optimum overshoots into infeasibility, and (as we show
-below) its Eisenstein data forces $b_n<0$ for infinitely many $n$, so no
-finite verification can rescue it. Adding all $45$ violated rows to $W$
-($|W|=73$) and re-solving exactly gives a vertex with
-\[
-b_0 \;=\; 101.181761\ldots \text{ (exact rational)},\qquad
-B \;=\; 146.10367\ldots \;=\; 32.9104\ldots\times\frac{2^{18}}{3^{10}},
-\]
-and \emph{no} violations: re-scanning exactly, $a_n\ge0$ and $b_n\ge0$
-for all $1\le n\le 800$ (zero negative coefficients on either side,
-including the un-enforced range $300<n\le800$). The cutting-plane
-process converges in one round. Exact rational arithmetic in the solve
+unconstrained optimum overshoots into infeasibility, and its Eisenstein
+data forces $b_n<0$ for infinitely many $n$, so no finite verification
+can rescue it: for that vertex the binding class-$3$ Eisenstein
+combination $r_3=e_1+e_3/(1+3^{17})$ is \emph{positive}
+($\approx+4.3\times10^{-13}$; exact value in the construction receipt),
+so for $n=3p$, $p>3$ prime, the Eisenstein term equals
+$\kappa_{18}\,r_3\,(1+3^{17})\,\sigma_{17}(p)<0$ (recall
+$\kappa_{18}<0$), of size $\asymp n^{17}$, while the cuspidal part is
+$O(\sigma_0(n)\,n^{17/2})$ by Deligne's bound --- so $b_n\to-\infty$
+along that class. Adding all $45$ violated rows to $W$
+($|W|=73$) and re-solving exactly gives a vertex, optimal for the
+enlarged program over $V$, with \emph{no} violations: re-scanning
+exactly, $a_n\ge0$ and $b_n\ge0$ for all $1\le n\le 800$ (zero negative
+coefficients on either side, including the un-enforced range
+$300<n\le800$). The cutting-plane process converges in one round (a
+statement about this initialization and violation scan, not a general
+convergence claim).
+Exactly,
+\begin{equation}\label{eq:exactB}
+B \;=\; b_0\cdot\frac{5^{18}}{2^{27}\,3^{9}},
+\qquad
+b_0=\frac{p}{q}\ \ \text{(exact rational, in lowest terms)},
+\end{equation}
+where $\tfrac{5^{18}}{2^{27}3^{9}}=\tfrac{3814697265625}{2641807540224}$
+is the exact value of $(2/\sqrt{24})^{18}(\sqrt{10}/2)^{36}$ and
+{\small
+\begin{align*}
+p={}&95066\,91735\,60589\,08133\,22373\,57126\,88188\,23298\,71412\,02030\,77849\,06752\,56657\\
+&93709\,84887\,76440\,11565\,11331\,34854\,11947\,23969\,08932\,10895\,90633\,472,\\
+q={}&93956\,57537\,80418\,71093\,01784\,65357\,83534\,26840\,65696\,00550\,96336\,00075\,25366\\
+&95749\,03464\,45951\,04757\,46960\,28937\,05377\,61585\,96625\,88923\,78832\,3,
+\end{align*}}%
+($123$ and $121$ digits; the fraction for $B$ itself, and outward
+decimal enclosures $b_0\in[101.1817608012,\,101.1817608013]$,
+$B\in[146.1036734821,\,146.1036734822]$, are in the ancillary file).
+Exact rational arithmetic in the solve
 is essential: at this conditioning, floating-point and even
 $300$-digit fixed-precision simplex return phantom vertices (violating
 $a_0=1$) once rows with coefficients of size $10^{30}$ enter the basis.
 
 \begin{remark}
-The certificate data --- the $20$ exact rational coordinates of the
-vertex (in the reduced basis of the construction), the exact Eisenstein
-coefficients, and all constants below --- are in the ancillary file
-\texttt{ancillary/certificate\_exact\_data.txt}; the construction and
-verification receipts are \texttt{ancillary/receipt\_d36\_cutgen.txt}
-and \texttt{ancillary/receipt\_d36\_cs.txt}.
+The certificate data --- the explicit list of the $29$ basis forms, the
+$20$ exact rational coordinates of the vertex in the (pivot-ordered)
+reduced basis, the coordinate-to-form map, the exact rational $b_0$ and
+$B$, the exact Eisenstein coefficients, and all constants below --- are
+in the ancillary file \texttt{ancillary/certificate\_exact\_data.txt};
+the construction and verification receipts are
+\texttt{ancillary/receipt\_d36\_cutgen.txt} and
+\texttt{ancillary/receipt\_d36\_cs.txt}, and the single-driver
+verification is \texttt{ancillary/code/verify\_certificate.py}
+(\S\ref{sec:discussion}).
 \end{remark}
 
 \section{Eventual positivity}\label{sec:tail}
@@ -295,9 +397,9 @@ $e_\delta$ (computed by an exact projector, validated as explained
 below) have the numerical values
 \[
 \begin{array}{ll}
-e_1=-4.197922\cdot10^{-13}, & e_2=-2.023981\cdot10^{-14}, \\
-e_3=+5.361611\cdot10^{-5}, & e_4=+5.776815\cdot10^{-3}, \\
-e_6=-18.24676, & e_8=-27.55171, \\
+e_1=-4.197922\cdot10^{-13}, & e_2=-2.023980\cdot10^{-14}, \\
+e_3=+5.361610\cdot10^{-5}, & e_4=+5.776815\cdot10^{-3}, \\
+e_6=-18.24675, & e_8=-27.55171, \\
 e_{12}=+43.87748, & e_{24}=+103.0969.
 \end{array}
 \]
@@ -321,20 +423,40 @@ c_E(\gamma)\;=\;
 \frac{\kappa_{18}e_\delta}{\delta^{17}},
 \end{equation}
 an exact rational number for each $\gamma$. Evaluating exactly: all
-eight constants $c_E(\gamma)$, $\gamma\mid24$, are \emph{positive},
-with the minimum on the class $\gamma=3$:
+sixteen constants (eight classes, both sides) are \emph{positive},
+with both minima on the class $\gamma=3$:
+
+\begin{center}
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+$\gamma$ & 1 & 2 & 3 & 4 & 6 & 8 & 12 & 24\\
+\midrule
+$c_E(\gamma)$, $\tilde g$-side ($\times10^{-13}$) &
+$2.749$ & $2.749$ & $\mathbf{0.0301}$ & $0.547$ & $7.089$ & $0.627$ &
+$4.887$ & $4.967$\\
+$c_E^{(a)}(\gamma)$, $g$-side ($\times10^{-11}$) &
+$2.555$ & $4.731$ & $\mathbf{0.506}$ & $2.921$ & $2.682$ & $2.921$ &
+$0.873$ & $0.873$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
 \begin{equation}\label{eq:cE}
 c_E \;:=\; \min_{\gamma\mid24}c_E(\gamma)\;=\;c_E(3)
-\;=\;3.0197203\cdot10^{-15}\quad(\tilde g\text{-side}),
+\;=\;3.0197202\cdot10^{-15}\quad(\tilde g\text{-side}),
 \end{equation}
-and analogously $c_E^{(a)}=c_E^{(a)}(3)=5.0672218\cdot10^{-12}$ for
-$g$ (again the minimum over all eight classes, all positive). The
-displayed decimals are certified truncations of the exact rationals,
-which are provided in the ancillary files.
+and analogously $c_E^{(a)}=c_E^{(a)}(3)=5.0672217\cdot10^{-12}$ for
+$g$ (again the minimum over all eight classes). All sixteen constants
+are exact rationals; the table and \eqref{eq:cE} display truncations,
+and the exact numerators/denominators are printed in the ancillary
+file \texttt{ancillary/guarded\_cE.txt} (output of
+\texttt{code/d36\_guarded\_cE.py}).
 The thinness of these constants --- forced by the active constraints at
-the LP optimum --- is what makes the tail argument in dimension $36$
-delicate: the certificate value lives $12$--$14$ orders of magnitude
-above the Eisenstein margin that protects its tail.
+the optimal vertex of \eqref{eq:lp} --- is what makes the tail argument
+in dimension $36$ delicate: the certificate value $b_0\approx101.2$
+exceeds the per-class Eisenstein floor constants $c_E$ by factors of
+$\approx2\times10^{13}$ ($g$-side) and $\approx3\times10^{16}$
+($\tilde g$-side).
 
 \subsection{The cuspidal remainder and a lift-aware Deligne constant}
 
@@ -356,7 +478,13 @@ reconstruction $\sum\lambda_{f,e}f(ez)$ agrees with $S$
 coefficient-by-coefficient, as exact rationals, for all $n\le 800$
 (deviation identically zero; the Sturm bound for
 $M_{18}(\Gamma_0(24))$ is $72$, so agreement to $800$ is a highly
-overdetermined identity). As a further check, the level-one component is
+overdetermined identity). This validation is an identity between
+\emph{rational} objects --- each Galois-orbit contribution
+$\sum_{f\in\text{orbit}}\lambda_{f,e}f(ez)$ has rational coefficients
+and is computed by exact rational linear algebra --- so it is
+independent of the interval layer described below, which enters only
+through the absolute values $|\lambda_{f,e}|$ of the individual
+conjugates inside a multi-dimensional orbit. As a further check, the level-one component is
 the unique normalized cusp form $\Delta E_6$ of weight 18, and the computed
 eigenvalues match $a_2=-528$, $a_3=-4284$, $a_5=-1025850$,
 $a_7=3225992$ exactly.
@@ -384,24 +512,68 @@ The point of the lemma is quantitative. The na\"ive constant
 $\sum_{f,e}|\lambda_{f,e}|$ equals $1.894\times10^{10}$ for our $S$:
 it is dominated ($99.7\%$) by the single coordinate
 $\lambda_{\Delta E_6,\,24}\approx-1.89\times10^{10}$ on the deepest
-oldform lift, and with it the crossover lands just \emph{beyond} the
-verified range ($n_0\approx827>800$) --- the verification fails
-marginally. The lift-aware constant suppresses that term by
-$24^{17/2}\approx5.4\times10^{11}$:
+oldform lift, and with it the verification over $n\le800$ fails: under
+the uniform inequality actually used below
+($\sigma_0(n)\le2\sqrt n$, crossover $(2C/c_E)^{1/8}$) the na\"ive
+crossover is $n_0\approx1372$; even discarding the divisor factor
+altogether --- which gives a valid \emph{lower} bound on the crossover,
+since $\sigma_0(n)\ge1$ --- positivity cannot be established below
+$(C/c_E)^{2/17}\approx827>800$. The lift-aware constant suppresses the
+deep-lift term by $24^{17/2}\approx5.4\times10^{11}$:
 \begin{equation}\label{eq:Cw}
 C_w \;\le\; 0.358807778339 \quad(\tilde g),
 \qquad
 C_w^{(a)} \;\le\; 0.306329333530 \quad(g),
 \end{equation}
-certified as upper bounds by outward-rounded interval arithmetic: the
-coordinates on rational (one-dimensional Galois orbit) blocks, including
-the dominant level-one tower, are computed as exact rational numbers
-(31 of the 64 lifts); the remaining 33 algebraic coordinates are
-enclosed via exact Sturm isolating intervals for the Hecke eigenvalues
-and an interval linear solve (enclosure widths $\sim10^{-50}$; the bound
-is stable to $15$ digits across four disjoint determining windows, and
-degrading the working precision widens the enclosure without breaking
-the bound, confirming outward rounding).
+certified as upper bounds by outward-rounded interval arithmetic, as
+follows.
+
+\emph{Exact part.} The coordinates on rational (one-dimensional Galois
+orbit) blocks, including the dominant level-one tower, are exact
+rational numbers ($31$ of the $64$ lifts); their contribution to $C_w$
+is exact up to the outward-rounded enclosure of $e^{-17/2}$.
+
+\emph{Interval part (the $33$ algebraic coordinates).} The coordinates
+themselves are exact algebraic numbers, specified by exact polynomial
+and embedding data; certified real intervals are used only to bound
+their absolute values for $C_w$. The residual
+$R=S-(\text{rational-block part})$ is itself an exact rational
+$q$-expansion lying in the $33$-dimensional span of the
+multi-dimensional orbits. Each Hecke eigenvalue of such an orbit is
+enclosed by an exact isolating interval with rational endpoints,
+produced by a Sturm-sequence root-isolation computation for the exact
+characteristic polynomial (isolation width
+$\le10^{-40}$; this fixes each real embedding unambiguously --- not to
+be confused with the Sturm bound for modular forms used above), the $33$
+lift $q$-vectors are propagated as outward-rounded interval vectors,
+and the coordinates are obtained from a sound interval Gaussian
+elimination (\texttt{mpmath.iv} throughout, \texttt{mpmath} version
+pinned in the ancillary \texttt{requirements.txt}) of the $33\times33$
+system on $33$ determining rows drawn from $n\in\{117,\dots,170\}$ (the
+exact row list is printed in the verification receipt); the rows are
+chosen by a floating-point pivoting pass, which affects only
+\emph{which} rows are used, not the soundness of the interval solve. A
+pivot interval straddling zero would make the enclosures blow up and
+the certificate comparison fail; the realized enclosure widths
+$\sim10^{-50}$ therefore also certify the nonsingularity of the chosen
+system, and the verification receipt records the minimal pivot
+magnitude (bounded away from zero) together with dyadic-rational
+outward enclosures for both constants \eqref{eq:Cw}. Cross-checks: the
+bound is stable to $15$ digits across four disjoint determining
+windows; artificially degrading the working precision widens the
+enclosure without ever breaking the bound (confirming outward
+rounding); the interval coordinates enclose the coordinates
+computed by the independent second implementation
+(\S\ref{sec:discussion}), which reproduces \eqref{eq:Cw} to all
+displayed digits; and the $33\times33$ interval solve together with
+the $|\lambda_{f,e}|$-aggregation is re-verified independently in Arb
+ball arithmetic (\texttt{python-flint}), consuming the exported exact
+dyadic endpoints (\texttt{d36\_arb\_check.py}; Arb's certified ball
+solve fails on a singular ball matrix, so its success certifies
+nonsingularity independently of the pivot log, and its exact dyadic
+upper bound on the algebraic-remainder sum agrees with the
+\texttt{mpmath.iv} value to all displayed digits --- the rational-block
+part of \eqref{eq:Cw} is exact and common to both computations).
 
 \subsection{Closing the certificate}
 
@@ -411,34 +583,55 @@ $\sigma_0(n)\le2\sqrt n$: for $n$ on any residue class,
 b_n\;\ge\;c_E\,n^{17}-2\,C_w\,n^{9}\;>\;0
 \qquad\text{whenever } n^{8}>\frac{2C_w}{c_E},
 \]
-i.e.\ for all $n\ge n_0=\lceil(2C_w/c_E)^{1/8}\rceil=63$; and on the
-$g$-side for all $n\ge n_0^{(a)}=25$. Since $a_n\ge0$ and $b_n\ge0$ have
+i.e.\ for all $n\ge n_0$, where $n_0=63$ is the smallest integer with
+$c_E\,n^8>2C_w$ --- certified by an exact rational comparison, with
+$C_w$ replaced by its certified upper bound \eqref{eq:Cw}; on the
+$g$-side, $n_0^{(a)}=25$. Since $a_n\ge0$ and $b_n\ge0$ have
 been verified exactly for $1\le n\le800$, both hold for all $n$, and
 $(g,\tilde g)$ satisfies \eqref{eq:feas}. Theorem~\ref{thm:main}
-follows from \eqref{eq:value}. \qed
+follows from \eqref{eq:value} and \eqref{eq:exactB}. \qed
 
 The margins are enormous ($2C_w/c_E$ would have to exceed its actual
 value by a factor $7\times10^{8}$ before $n_0$ reached $800$); the
 certificate is in no sense borderline once the correct constant is used.
+The role of the verification window $n\le800$ (rather than, say,
+$n\le63$): the window was fixed before the tail constants were
+computed, and with the na\"ive unweighted constant it is insufficient
+--- the uniform crossover is $n_0\approx1372$, and even the
+divisor-free lower bound on the crossover, $(C/c_E)^{2/17}\approx827$,
+already exceeds $800$ --- which is what motivated
+Lemma~\ref{lem:liftaware}; retaining the full window makes the exact
+reconstruction identity of \S\ref{sec:tail} overdetermined by an order
+of magnitude beyond the Sturm bound $72$, and a second implementation
+independently extends the exact sign scans to $n\le1100$.
 
 \section{Discussion}\label{sec:discussion}
 
 \paragraph{Strict non-sharpness in dimension 36 is far out of reach.}
-Our dual point shows $\delta_{\LP}(36)\ge32.91\,\delta_*$, and the
-two-point optimum itself is $\approx52.2\,\delta_*$
-\cite{CohnElkies,CT}. Strict non-sharpness would need an independent
-upper bound below $32.91\,\delta_*$, i.e.\ an improvement of
-$\approx37\%$ over the two-point bound. For comparison, the only
-technology that has ever improved on the two-point bound --- the
-three-point bounds of \cite{CdLS} --- gains $4.85\%$ at $d=12$ and
-$0.79\%$ at $d=16$, and no three-point computation exists in any
-dimension beyond $16$ \cite{CdLS,VallentinSurvey}. The paradox of
+Our dual point shows $\delta_{\LP}(36)\ge32.91\,\delta_*$ (recall
+$\delta_*$ denotes the best \emph{known} packing density, not the true
+optimum $\delta_{\max}$), and the best available \emph{numerical}
+two-point upper bound is $\approx52.2\,\delta_*$
+\cite{CohnElkies,CT} --- a numerical estimate: outside
+$d\in\{1,8,24\}$ the exact optimum of the Cohn--Elkies program is not
+known, and computed values are approximations from above
+\cite{CT}. Using our present dual point, strict non-sharpness would
+need an independent upper bound below $32.91\,\delta_*$, i.e.\ an improvement of
+$\approx37\%$ over the two-point bound. For comparison, the only general-purpose
+technology quantified to improve on the two-point bound in this
+range --- the three-point bounds of \cite{CdLS} --- gains $4.85\%$ at $d=12$ and
+$0.79\%$ at $d=16$, and no three-point computation has been reported in
+any dimension beyond $16$ (cf.\ the computational range of \cite{CdLS};
+survey \cite{VallentinSurvey}). The paradox of
 dimension $36$ is that the \emph{weakness} of the known record makes
-the dual statement strong and the strict statement inaccessible: the
-dual value sits far below the LP optimum precisely because the record
-is far below both.
+the dual statement strong and the strict statement inaccessible: both
+our dual value and the two-point bound are large multiples of the
+record precisely because the record is weak; the residual gap between
+them reflects the suboptimality of our particular certificate (a
+finite search subspace and the choice $T=10$), not a property of the
+problem.
 
-\paragraph{Dimensions 40 and 44.} The same pipeline reaches $d=40$
+\paragraph{Dimension 40.} The same pipeline reaches $d=40$
 (weight $20$) in principle, with two new costs: the weight-$20$
 eta-quotients of level $24$ span only a $72$-dimensional subspace of the
 $80$-dimensional $M_{20}(\Gamma_0(24))$, so the basis must be augmented
@@ -446,8 +639,9 @@ $80$-dimensional $M_{20}(\Gamma_0(24))$, so the basis must be augmented
 is heavier ($\sigma_{19}$ growth). We have not completed a $d=40$
 certificate. We note that Remark~4.3 of \cite{Zhou} asserts that for
 $d=32$ and $d=40$ ``LP non-sharpness is established by other means'',
-without a supporting citation for the case $d=40$; we are not aware of
-any dual bound or non-sharpness proof in dimension $40$. The
+without a supporting citation for the case $d=40$; as of July 2026 we
+have been unable to locate any published dual bound or non-sharpness
+proof in dimension $40$. The
 modular-bootstrap analysis of \cite{AJCHdLT} (building on the sphere
 packing--quantum gravity correspondence of \cite{HMR}) rules out
 \emph{sharpness}
@@ -475,13 +669,34 @@ $q$-expansions of eta-quotients, and interval arithmetic (Python:
 \texttt{sympy}, \texttt{mpmath}, \texttt{fractions}); no computer-algebra
 system with modular-forms machinery is required. Floating-point routines
 (\texttt{numpy}, \texttt{scipy}) are used only in the \emph{construction}
-step, as a heuristic to locate the candidate vertex and basis; they play
-no role in the exact rigor pass, and every constant reported here is
-recomputed exactly. The full pipeline, receipts, and the exact
+step, as heuristics to select the pivot basis (\S\ref{sec:space}) and
+to locate the candidate vertex; they play
+no role in the exact rigor pass, and every theorem-critical constant
+reported here is either recomputed exactly or bounded by a certified
+outward enclosure (the labeled numerical estimates of this section are
+the only exceptions). The full pipeline, receipts, and the exact
 certificate are provided as ancillary files, together with an
 independent second implementation of the newform decomposition
 (high-precision simultaneous diagonalization) that reproduces the
-constants \eqref{eq:Cw} to all reported digits.
+constants \eqref{eq:Cw} to all reported digits; a third, optional
+CAS-based cross-check --- a PARI/GP reproduction
+(\texttt{d36\_C\_pari\_indep.py}, via the native modular-symbols
+engine, no shared code path) that rebuilds the $64$-form
+newform/oldform lift basis from scratch and again reproduces both
+constants \eqref{eq:Cw} to all reported digits, along with the
+newspace dimension table and the level-one eigenvalues; and an
+independent Arb (ball-arithmetic) re-verification of the
+theorem-critical interval solve (\texttt{d36\_arb\_check.py},
+\S\ref{sec:tail}). The ancillary manifest
+separates the files that constitute the \emph{proof} of
+Theorem~\ref{thm:main} from exploratory/receipt material, lists SHA-256
+checksums of the data files, and the driver
+\texttt{verify\_certificate.py} re-runs the exact-data chain ---
+reduced-basis reconstruction from the published form list, vertex
+feasibility scans, Eisenstein projection, guarded $c_E$, tail
+crossover --- from the published exact data alone (with the $C_w$
+upper bounds as separately certified inputs), printing
+\texttt{VERIFIED} only if every gate passes.
 
 \paragraph{Data and code availability.} The exact certificate data, the
 construction and verification receipts, and the complete Python pipeline
@@ -491,7 +706,11 @@ ancillary files accompanying this submission; see
 
 \paragraph*{Acknowledgements.} The construction, the exact-arithmetic
 certificate, and the preparation of this manuscript were carried out with
-substantial assistance from AI language-model tools. The
+substantial assistance from AI language-model tools: Anthropic's Claude
+models (Claude Fable~5 and Claude Opus~4.8) were used for the construction
+of the certificate, the verification tooling, and the drafting of the
+manuscript, and OpenAI's GPT-5.6 (Codex) was used as an independent
+cross-check of the certificate computations. The
 correctness of the main result does not rest on trust in those tools: the
 certificate is exact and machine-checkable, and every numerical claim has
 been reproduced by re-running the exact-arithmetic verification from
@@ -523,8 +742,8 @@ M.~Viazovska, \emph{The sphere packing problem in dimension 24},
 Ann. of Math. \textbf{185} (2017), 1017--1033.
 
 \bibitem{CT} H.~Cohn and N.~Triantafillou,
-\emph{Dual bounds for sphere packing via modular forms},
-Math. Comp. \textbf{91} (2022), 491--508. arXiv:1909.04772.
+\emph{Dual linear programming bounds for sphere packing via modular
+forms}, Math. Comp. \textbf{91} (2022), 491--508. arXiv:1909.04772.
 
 \bibitem{Li} R.~Li,
 \emph{Dual linear programming bounds for sphere packing via discrete
@@ -543,11 +762,12 @@ IEEE Trans. Inform. Theory \textbf{38} (1992), 227--246.
 
 \bibitem{AJCHdLT} N.~Afkhami-Jeddi, H.~Cohn, T.~Hartman, D.~de~Laat and
 A.~Tajdini, \emph{High-dimensional sphere packing and the modular
-bootstrap}, J. High Energy Phys. (2020). arXiv:2006.02560.
+bootstrap}, J. High Energy Phys. \textbf{12} (2020), 066.
+arXiv:2006.02560.
 
 \bibitem{HMR} T.~Hartman, D.~Maz\'a\v{c} and L.~Rastelli,
 \emph{Sphere packing and quantum gravity},
-J. High Energy Phys. (2019). arXiv:1905.01319.
+J. High Energy Phys. \textbf{12} (2019), 048. arXiv:1905.01319.
 
 \bibitem{Zhou} J.~Zhou,
 \emph{Cusp form dimensions, lattice uniqueness, and LP sharpness for

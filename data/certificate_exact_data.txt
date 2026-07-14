@@ -48,3 +48,67 @@ COEF18*r3 = 14734230043129568982415015359328119469021694958237458781768268780281
     ~= 3.022056095e-15
 
 ## scans: a_n>=0 and b_n>=0 verified exactly for 1<=n<=800 (0 negatives each side)
+
+# ===================================================================== v2 (2026-07-14)
+# Sections added in revision (referee report R-3.1/R-3.2): the explicit reduced basis,
+# the exact rational b_0 and B(g), and rounding conventions.
+
+## Rounding conventions used throughout the paper and this bundle
+#  - "exact"        : the printed integers/fractions are the exact rational values.
+#  - decimals       : unless marked otherwise, decimal displays are TRUNCATIONS toward zero
+#                     of exact rationals (i.e. rounded toward zero).
+#  - C_w bounds     : certified UPPER bounds (outward-rounded interval arithmetic).
+#  - c_E(gamma)     : exact rationals (see guarded_cE.txt); their decimal displays truncations.
+#  - b_0, B(g)      : exact rationals below, with outward decimal enclosures [down, up].
+
+## The reduced basis: the 29 forms (pivot order = coordinate order used everywhere)
+# Selection recipe (deterministic given the candidate order): candidate list = the 8
+# Eisenstein series E_18(delta z), delta|24, followed by the holomorphic weight-18
+# eta-quotients of level dividing 24 (Ligozat criteria, exponent bound |r_delta|<=8) in
+# enumeration order of ct_dual_d36.enumerate_etaq; QR with column pivoting on the
+# floating-point coefficient matrix truncated at q^28 (29 columns a_0..a_28 => at most 29
+# pivots) selects the 29 forms below; everything downstream treats them EXACTLY.
+# Notation: eta-quotients as prod_{delta|24} eta(delta z)^{r_delta}.
+form[ 0] = Eis  E_18(q^1)
+form[ 1] = Eis  E_18(q^2)
+form[ 2] = Eis  E_18(q^3)
+form[ 3] = Eis  E_18(q^4)
+form[ 4] = Eis  E_18(q^6)
+form[ 5] = eta  {1:8, 2:8, 3:8, 4:7, 6:8, 8:7, 12:-5, 24:-5}
+form[ 6] = eta  {1:8, 2:7, 3:8, 4:7, 6:-1, 8:8, 12:7, 24:-8}
+form[ 7] = Eis  E_18(q^8)
+form[ 8] = eta  {1:8, 2:6, 3:8, 4:6, 6:6, 8:8, 12:2, 24:-8}
+form[ 9] = eta  {1:8, 2:8, 3:8, 4:-5, 6:8, 8:7, 12:7, 24:-5}
+form[10] = eta  {1:8, 2:8, 3:8, 4:2, 6:4, 8:8, 12:6, 24:-8}
+form[11] = eta  {1:7, 2:8, 3:-5, 4:8, 6:8, 8:7, 12:8, 24:-5}
+form[12] = eta  {1:8, 2:8, 3:8, 4:1, 6:8, 8:7, 12:1, 24:-5}
+form[13] = eta  {1:8, 2:8, 4:8, 6:4, 8:8, 12:8, 24:-8}
+form[14] = eta  {1:8, 2:8, 3:4, 4:8, 6:6, 8:8, 12:-2, 24:-4}
+form[15] = eta  {1:8, 2:8, 4:8, 6:8, 8:2, 12:8, 24:-6}
+form[16] = eta  {1:8, 2:6, 3:-4, 4:6, 6:8, 8:8, 12:8, 24:-4}
+form[17] = eta  {1:-8, 2:8, 3:8, 4:6, 6:8, 8:8, 12:6}
+form[18] = eta  {1:8, 2:8, 3:8, 4:7, 6:-4, 8:7, 12:7, 24:-5}
+form[19] = eta  {1:8, 2:1, 3:8, 4:7, 6:5, 8:8, 12:7, 24:-8}
+form[20] = eta  {1:8, 2:4, 3:8, 4:4, 6:8, 8:8, 12:4, 24:-8}
+form[21] = eta  {1:3, 2:8, 3:7, 4:7, 6:4, 8:8, 12:7, 24:-8}
+form[22] = eta  {1:8, 2:-8, 3:8, 4:7, 6:8, 8:5, 12:7, 24:1}
+form[23] = eta  {1:6, 2:6, 3:6, 4:8, 6:6, 8:8, 12:4, 24:-8}
+form[24] = eta  {1:-5, 2:8, 3:7, 4:8, 6:8, 8:7, 12:8, 24:-5}
+form[25] = eta  {1:8, 2:-4, 3:8, 4:7, 6:8, 8:7, 12:7, 24:-5}
+form[26] = eta  {1:-4, 2:8, 3:8, 4:8, 6:6, 8:8, 12:6, 24:-4}
+form[27] = Eis  E_18(q^24)
+form[28] = eta  {2:6, 3:8, 4:8, 6:6, 8:8, 12:8, 24:-8}
+# Summary: 7 Eisenstein (delta in {1,2,3,4,6,8,24}) + 22 eta-quotients = 29 forms; their span
+# V is a 29-dimensional subspace of the 72-dimensional M_18(Gamma_0(24)).
+# Coordinate->form map: with B_m = exact rational nullspace basis (sympy Matrix.nullspace order)
+# of the 9x29 matrix (a_1..a_9 rows of the 29 forms), the certificate form is
+#   g = sum_j (B_m x)_j * form[j],   x = the 20 coordinates above.
+
+## Exact value of the certificate (from GBr[0].x with the published x; a_0 = GAr[0].x = 1 exact)
+b_0 = 950669173560589081332237357126881882329871412020307784906752566579370984887764401156511331348541194723969089321089590633472/9395657537804187109301784653578353426840656960055096336000752536695749034644595104757469602893705377615859662588923788323
+b_0 in [101.1817608012, 101.1817608013]   (outward decimal enclosure)
+scale = (2/sqrt24)^18 * (sqrt10/2)^36 = 5^18/(2^27*3^9) = 3814697265625/2641807540224   (exact)
+B(g) = b_0 * 5^18/(2^27*3^9)
+     = 179927787903879900416837170837232683080840773510717423112122535812192452301786939128296753710352467436316572839673961639404296875/1231507624795070412790403518113821940362858589068341586952290636489785217468936369570771055790483751254865957694855418783072256
+B(g) in [146.1036734821, 146.1036734822]  (outward decimal enclosure)
+B(g)/record = B(g)/(2^18/3^10) in [32.91044546, 32.91044547]

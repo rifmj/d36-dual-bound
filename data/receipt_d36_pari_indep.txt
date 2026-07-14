@@ -1,0 +1,29 @@
+  ***   Warning: new stack size = 8011776 (7.641 Mbytes).
+==============================================================================
+d36_C_pari_indep.py — independent PARI/GP reproduction of C_w, both sides
+==============================================================================
+PARI version: (2, 17, 2)   Ncheck=150
+full cusp dim mfdim([24,18],1) = 64   (paper: 64)
+newspace dims per level M: {1: 1, 2: 1, 3: 3, 4: 2, 6: 3, 8: 4, 12: 2, 24: 9}   (paper: 1,1,3,2,3,4,2,9)
+# individual lift q-series = 64   (paper: 64)
+level-1 newform eigenvalues a_2,a_3,a_5,a_7 = [-528, -4284, -1025850, 3225992]
+   (paper: -528, -4284, -1025850, 3225992)
+Deligne |a_p| <= 2 p^8.5 spot-check on newform embeddings, p<=97: violations = 0
+------------------------------------------------------------------------------
+g~ (Fricke side):
+  basis rank over rows n=1..150: 64  (want 64)
+  reconstruction max RELATIVE residual over ALL rows n=1..150: 0.000e+00  (want ~0)
+  ==> C_w = sum |lambda|/e^8.5 = 0.358807778338
+      receipt (interval-certified upper bound): 0.358807778338
+      agreement to ~1e-11: True
+      dominant (level, lift): M=8, e=3 -> 0.038650 of C_w
+------------------------------------------------------------------------------
+g  (a side):
+  basis rank over rows n=1..150: 64  (want 64)
+  reconstruction max RELATIVE residual over ALL rows n=1..150: 0.000e+00  (want ~0)
+  ==> C_w = sum |lambda|/e^8.5 = 0.306329333529
+      receipt (interval-certified upper bound): 0.306329333529
+      agreement to ~1e-11: True
+      dominant (level, lift): M=8, e=3 -> 0.026704 of C_w
+==============================================================================
+PARI INDEPENDENT REPRODUCTION: PASS

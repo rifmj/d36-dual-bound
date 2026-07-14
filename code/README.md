@@ -2,8 +2,22 @@
 
 Self-contained Python implementation for the paper *"A dual linear programming
 bound for sphere packing in dimension 36."* This directory contains the exact
-dependency closure (12 modules) plus the cached intermediate data (4 `.pkl`),
+dependency closure plus the cached intermediate data (4 `.pkl`, all regenerable),
 so every numerical claim in the paper can be reproduced with no external files.
+
+**Start here (v2/v3):** `python3 verify_certificate.py` — the single verification
+driver. It rebuilds the certificate from the published text data alone
+(`../certificate_exact_data.txt`; no `.pkl` caches are read) and prints
+`VERIFIED` only if all exact gates pass. The interval certification
+of the two `C_w` upper bounds is the separate step
+`python3 d36_cs_certificate.py`; the optional independent Arb re-verification
+of its 33×33 interval solve is `d36_arb_check.py` (python-flint). File tiers
+(proof core / independent cross-checks / construction history): `../MANIFEST.md`.
+
+Runtime metadata (commodity laptop, Python 3.11): `verify_certificate.py` ≈ 4 min /
+<1 GB RAM; `d36_cs_certificate.py` ≈ 2–3 min (with shipped caches);
+`d36_cusp_reconstruct.py 800` ≈ 8 min; `d36_span_rank_certify.py` ≈ 25 s;
+`d36_C_pari_indep.py` ≈ 1–2 min; `d36_arb_check.py` ≈ 5 s.
 
 ## Environment
 Pure Python — no computer-algebra system (no Sage/Pari) required.
@@ -27,6 +41,7 @@ Construction (the dual vertex):
 - `eisen_projection.py`  — exact Eisenstein projector on M_18(Gamma_0(24)) (uses `eisen_projection_PROJ.pkl`).
 
 Verification (eventual positivity):
+- `verify_certificate.py`   — v2 single driver: rebuilds the certificate from `../certificate_exact_data.txt` alone and runs all exact gates (G1–G7); prints `VERIFIED`.
 - `d36_cusp_reconstruct.py` — exact cusp components S = g - P_E(g), both sides; builds/caches `d36_iter1_vertex.pkl`.
 - `d36_newform_decomp.py`   — exact cusp basis (dim 64) + exact Hecke matrices; builds `d36_cusp_basis_hecke.pkl`. `--selftest` gate.
 - `d36_cs_certificate.py`   — newform/oldform decomposition, exact reconstruction gates, lift-aware C_w, and the RIGOROUS outward-rounded interval certification. Writes `receipt_d36_cs.txt`.

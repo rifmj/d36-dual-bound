@@ -101,8 +101,11 @@ RIGOROUS C_S_w CERTIFICATION  (sound interval upper bound on C_S_w = sum|lambda|
        e=12: |lambda|=6219790.4592862455  (exact rational)
        e=24: |lambda|=18894562109.74719  (exact rational)
     algebraic remainder (d>1 blocks, 33 lifts): SOUND interval solve on 33 determining rows n in 117..170
+       exact determining-row list (33 rows): [117, 125, 127, 129, 133, 135, 137, 139, 141, 143, 145, 147, 148, 149, 150, 151, 153, 154, 155, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170]
+       min pivot-interval magnitude in the interval Gaussian elimination: 8.8963703e+10  ( > 0 certifies no pivot interval contains zero => the 33x33 system is nonsingular)
        sum|lambda|/e^8.5 (algebraic) <= 0.155919729912 (enclosure width 6.35e-51)
     RIGOROUS C_S_w <= 0.358807778338  (enclosure [0.358807778338, 0.358807778338], width 1.27e-50)
+    dyadic-rational OUTWARD upper bound:  C_S_w <= 536983711260839947309253433156309712891535628594723/1496577676626844588240573268701473812127674924007424
     RIGOROUS C_S_w <= 0.358807778338  vs ceiling 2.53336e+8  -> PASS  (margin 7.06049e+8x)
     rigorous n0 (task 1/8, sigma_0<=2sqrt(n)) = (2*C_S_w/c_E)^(1/8) <= 62.65398  -> <= 800 OK
     rigorous n0 (correct 2/17)               = (C_S_w/c_E)^(2/17)  <= 45.272086  -> <= 800 OK
@@ -124,8 +127,11 @@ RIGOROUS C_S_w CERTIFICATION  (sound interval upper bound on C_S_w = sum|lambda|
        e=12: |lambda|=7715479.304639452  (exact rational)
        e=24: |lambda|=1197412145.135987  (exact rational)
     algebraic remainder (d>1 blocks, 33 lifts): SOUND interval solve on 33 determining rows n in 117..170
+       exact determining-row list (33 rows): [117, 125, 127, 129, 133, 135, 137, 139, 141, 143, 145, 147, 148, 149, 150, 151, 153, 154, 155, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170]
+       min pivot-interval magnitude in the interval Gaussian elimination: 8.8963703e+10  ( > 0 certifies no pivot interval contains zero => the 33x33 system is nonsingular)
        sum|lambda|/e^8.5 (algebraic) <= 0.137382869908 (enclosure width 4.34e-51)
     RIGOROUS C_S_w <= 0.306329333529  (enclosure [0.306329333529, 0.306329333529], width 9.35e-51)
+    dyadic-rational OUTWARD upper bound:  C_S_w <= 114611410563757019422192523342658753134126446147071/374144419156711147060143317175368453031918731001856
     RIGOROUS C_S_w <= 0.306329333529  vs ceiling 4.251e+11  -> PASS  (margin 1.38772e+12x)
     rigorous n0 (task 1/8, sigma_0<=2sqrt(n)) = (2*C_S_w/c_E)^(1/8) <= 24.283104  -> <= 800 OK
     rigorous n0 (correct 2/17)               = (C_S_w/c_E)^(2/17)  <= 18.552414  -> <= 800 OK

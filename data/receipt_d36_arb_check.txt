@@ -1,0 +1,22 @@
+==============================================================================
+b-side: Arb re-solve of the 33x33 algebraic-remainder system (rows 117..170)
+  arb solve OK (certified nonsingular ball matrix)
+  Arb EXACT dyadic upper bound on sum |lambda|/e^8.5:
+    = 29168248391442654859008587769172473675207276694213
+     /187072209578355573530071658587684226515959365500928
+    ~ 0.155919729912  (float display of the exact bound)
+  mpmath receipt (algebraic part)        <= 0.155919729912
+  total C_w (Arb alg + receipt exact part) ~ 0.358807778338  vs ceiling 2.533e+08: PASS
+  ==> b-side Arb re-verification: PASS
+==============================================================================
+a-side: Arb re-solve of the 33x33 algebraic-remainder system (rows 117..170)
+  arb solve OK (certified nonsingular ball matrix)
+  Arb EXACT dyadic upper bound on sum |lambda|/e^8.5:
+    = 51401034063675230402560337951509812470222926477311
+     /374144419156711147060143317175368453031918731001856
+    ~ 0.137382869908  (float display of the exact bound)
+  mpmath receipt (algebraic part)        <= 0.137382869908
+  total C_w (Arb alg + receipt exact part) ~ 0.306329333529  vs ceiling 4.251e+11: PASS
+  ==> a-side Arb re-verification: PASS
+==============================================================================
+ARB INDEPENDENT RE-VERIFICATION: PASS
