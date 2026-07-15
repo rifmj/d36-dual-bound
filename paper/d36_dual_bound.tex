@@ -246,7 +246,12 @@ center density)
 B(g)\;=\;b_0\cdot\Bigl(\tfrac{2}{\sqrt N}\Bigr)^{d/2}\cdot
 \Bigl(\tfrac{\sqrt T}{2}\Bigr)^{d},
 \end{equation}
-so that $\delta_{\LP}(d)\ge B(g)$. Here $T$ is a free integer parameter
+so that $\delta_{\LP}(d)\ge B(g)$. The implication that \eqref{eq:feas}
+yields a dual-feasible distribution of value \eqref{eq:value} is
+\cite[Prop.~2.1 and \S\S2--3]{CT}, invoked here as a black box; it is the
+one load-bearing input the present paper does not reprove, and the $d=12$
+reproduction below calibrates our implementation of the interface
+\eqref{eq:feas}--\eqref{eq:value}. Here $T$ is a free integer parameter
 (the cutoff index: the $T-1$ coefficients $a_1,\dots,a_{T-1}$ are forced
 to vanish). We take $T=10$. As a consistency
 check of the normalization, our implementation of
@@ -528,11 +533,15 @@ C_w\;=\;\sum_{f,e}\frac{|\lambda_{f,e}|}{e^{(k-1)/2}}.
 By the divisor bound $|a_f(m)|\le\sigma_0(m)m^{(k-1)/2}$, valid for
 every $m\ge1$ and each normalized newform --- at the unramified primes
 $p\nmid M$, Deligne's estimate and the Hecke recursion give
-$|a_f(p^r)|\le(r+1)\,p^{r(k-1)/2}$; at the ramified primes $p\mid M$, the
+$|a_f(p^r)|\le(r+1)\,p^{r(k-1)/2}$; at the ramified primes $p\mid M$ we
+distinguish two cases. If $p\,\|\,M$ (exactly divides the level), the
 local newform bound $|a_f(p)|\le p^{(k-2)/2}$ with $a_f(p^r)=a_f(p)^r$
 (the local Euler factor at a prime exactly dividing the level, for a
 newform of trivial character; see e.g.\ \cite[\S5.8]{DiamondShurman})
-gives $|a_f(p^r)|\le p^{r(k-2)/2}\le\sigma_0(p^r)\,p^{r(k-1)/2}$, and the
+gives $|a_f(p^r)|\le p^{r(k-2)/2}\le\sigma_0(p^r)\,p^{r(k-1)/2}$; if
+$p^2\mid M$, then (trivial character) $a_f(p)=0$, so $a_f(p^r)=0$ and the
+bound holds a fortiori. Both cases occur here, as the newform levels
+$M\mid 24$ include $M\in\{4,8,12,24\}$ with $2^2\mid M$. The
 bound for general $m$ follows by multiplicativity. The coefficient of $q^n$ in $f(ez)$ is $a_f(n/e)$
 if $e\mid n$ and $0$ otherwise, and for $e\mid n$,
 $\sigma_0(n/e)\le\sigma_0(n)$ and
