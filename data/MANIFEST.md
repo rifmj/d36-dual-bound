@@ -10,6 +10,8 @@ CROSS-CHECKS / CONSTRUCTION HISTORY, a single verification driver is provided, a
 
     cd code/
     pip install -r requirements.txt
+    python3 verify_all.py                # one command — checksums + exact + interval + Arb, nonzero exit on any failure
+    # or run the stages individually:
     python3 verify_certificate.py        # ~3-4 min; prints VERIFIED iff every gate passes
     python3 d36_cs_certificate.py        # the interval certification of the C_w upper bounds
 

@@ -25,7 +25,7 @@
 
 \title{A dual linear programming bound for sphere packing\\ in dimension 36}
 \author{Rifat Jumagulov\\ \texttt{jum.rifm@gmail.com}}
-\date{July 13, 2026}
+\date{July 13, 2026 (revised July 15, 2026)}
 
 \begin{document}
 \maketitle
@@ -42,9 +42,11 @@ particular, no Cohn--Elkies auxiliary function can certify the best known
 packing in dimension $36$ as optimal. To our knowledge this is the first
 such dual bound in any dimension above $32$, extending the table of
 Cohn--Triantafillou ($d=12,16,20,28,32$), Li ($3\le d\le 13$), and
-de~Courcy-Ireland--Dostert--Viazovska ($d=6$). The certificate is exact:
-the dual point is a rational vector, coefficient nonnegativity is
-verified by exact arithmetic up to $n=800$, and eventual positivity of
+de~Courcy-Ireland--Dostert--Viazovska ($d=6$). The certificate is
+rigorous and machine-checkable, with exact rational data and certified
+interval bounds: the dual point is a rational vector, coefficient
+nonnegativity is verified by exact arithmetic up to $n=800$, and
+eventual positivity of
 the two relevant $q$-expansions is proved via an explicit Deligne-type
 tail bound whose constant is certified with outward-rounded interval
 arithmetic. Two methodological points may be of independent interest: a
@@ -124,9 +126,8 @@ $q$-expansions is verified exactly for $1\le n\le 800$ and proved for
 all $n>n_0$ with an explicit crossover $n_0\le 63$, closing the gap.
 
 Dimension $36$ is a natural target: the weight $k=d/2=18$ is even, so no
-character twists are needed, and $36$ is the first dimension beyond the
-Cohn--Triantafillou table where $\dim S_{d/2}$ obstructions do not
-apply. It is also qualitatively different from the dimensions
+character twists are needed, and $36$ is the next multiple of $4$ beyond the
+Cohn--Triantafillou table $\{12,16,20,28,32\}$. It is also qualitatively different from the dimensions
 $\le 32$: the ratio $\delta_{\LP}/\delta_*$ is much larger (our
 certificate alone gives $32.9$; the best numerical two-point upper
 bound is $\approx 52\times\delta_*$), reflecting how weak the record packing is
@@ -296,7 +297,12 @@ eta-quotients; the full list, in pivot order (which fixes the
 coordinate system used everywhere, including the published
 certificate), is in the ancillary file
 \texttt{ancillary/certificate\_exact\_data.txt}, and $V$ is the span
-of these $29$ forms. This pivot selection is the one floating-point
+of these $29$ forms. These $29$ forms are linearly independent over
+$\mathbb{Q}$: the exact rational coefficient matrix
+$\bigl(a_n(f_j)\bigr)_{0\le n\le100,\,1\le j\le29}$ has rank $29$,
+certified by an exact mod-$p$ rank computation at $p=10^9+7$ (a mod-$p$
+rank lower-bounds the $\mathbb{Q}$-rank, so rank $29$ is exact); the
+driver re-runs this as gate G1b (Table~\ref{tab:tcb}). This pivot selection is the one floating-point
 step in the construction: it only decides \emph{which} forms to use,
 and everything downstream treats the selected forms exactly.
 Restricting the search to $V\subsetneq M_{18}(\Gamma_0(24))$ can only
@@ -332,11 +338,12 @@ vertex, verified unconditionally in \S\ref{sec:tail}.
 
 \subsection{Constraint generation}
 
-With $W=\{1,\dots,28\}$ the exact optimum of \eqref{eq:lp} (over $V$)
-is $36.3470\times 2^{18}/3^{10}$, but its Fricke expansion has $45$
+With $W=\{1,\dots,28\}$ the exact rational simplex returns for
+\eqref{eq:lp} (over $V$) a vertex of value $36.3470\times 2^{18}/3^{10}$,
+but its Fricke expansion has $45$
 negative coefficients in $1\le n\le 300$, all in the classes
 $n\equiv3,9,15,21\  (\mathrm{mod}\ 24)$, the first at $n=33$: the
-unconstrained optimum overshoots into infeasibility, and its Eisenstein
+unconstrained vertex overshoots into infeasibility, and its Eisenstein
 data forces $b_n<0$ for infinitely many $n$, so no finite verification
 can rescue it: for that vertex the binding class-$3$ Eisenstein
 combination $r_3=e_1+e_3/(1+3^{17})$ is \emph{positive}
@@ -346,7 +353,7 @@ $\kappa_{18}\,r_3\,(1+3^{17})\,\sigma_{17}(p)<0$ (recall
 $\kappa_{18}<0$), of size $\asymp n^{17}$, while the cuspidal part is
 $O(\sigma_0(n)\,n^{17/2})$ by Deligne's bound --- so $b_n\to-\infty$
 along that class. Adding all $45$ violated rows to $W$
-($|W|=73$) and re-solving exactly gives a vertex, optimal for the
+($|W|=73$) and re-solving exactly gives the vertex returned for the
 enlarged program over $V$, with \emph{no} violations: re-scanning
 exactly, $a_n\ge0$ and $b_n\ge0$ for all $1\le n\le 800$ (zero negative
 coefficients on either side, including the un-enforced range
@@ -523,6 +530,8 @@ every $m\ge1$ and each normalized newform --- at the unramified primes
 $p\nmid M$, Deligne's estimate and the Hecke recursion give
 $|a_f(p^r)|\le(r+1)\,p^{r(k-1)/2}$; at the ramified primes $p\mid M$, the
 local newform bound $|a_f(p)|\le p^{(k-2)/2}$ with $a_f(p^r)=a_f(p)^r$
+(the local Euler factor at a prime exactly dividing the level, for a
+newform of trivial character; see e.g.\ \cite[\S5.8]{DiamondShurman})
 gives $|a_f(p^r)|\le p^{r(k-2)/2}\le\sigma_0(p^r)\,p^{r(k-1)/2}$, and the
 bound for general $m$ follows by multiplicativity. The coefficient of $q^n$ in $f(ez)$ is $a_f(n/e)$
 if $e\mid n$ and $0$ otherwise, and for $e\mid n$,
@@ -599,12 +608,15 @@ nonsingularity independently of the pivot log, and its exact dyadic
 upper bound on the algebraic-remainder sum agrees with the
 \texttt{mpmath.iv} value to all displayed digits --- the rational-block
 part of \eqref{eq:Cw} is exact and common to both computations). In
-particular the theorem-critical enclosure does not rest on the
-\texttt{mpmath.iv} interval module alone: the same outward-rounded bound
-and the nonsingularity of the $33\times33$ system are re-established
-independently in Arb ball arithmetic, a library built for rigorous
-enclosure, so the two engines corroborate one another rather than
-\texttt{mpmath.iv} serving as the sole certifier.
+particular the theorem-critical interval \emph{solve} does not rest on
+the \texttt{mpmath.iv} module alone: Arb ball arithmetic (a library
+built for rigorous enclosure) independently re-certifies the linear
+solve, the nonsingularity of the $33\times33$ system, and the final
+$|\lambda_{f,e}|$-aggregation, starting from the exported dyadic matrix
+enclosures --- it does \emph{not} rebuild those enclosures, whose
+construction (exact Sturm root-isolation and \texttt{mpmath.iv} interval
+propagation) is instead corroborated by the independent high-precision
+and PARI reproductions (\S\ref{sec:discussion}).
 
 \subsection{Closing the certificate}
 
@@ -667,7 +679,7 @@ Our dual point shows $\delta_{\LP}(36)\ge32.91\,\delta_*$ (recall
 $\delta_*$ denotes the best \emph{known} packing density, not the true
 optimum $\delta_{\max}$), and the best available \emph{numerical}
 two-point upper bound is $\approx52.2\,\delta_*$
-\cite{CohnElkies,CT} --- a numerical estimate: outside
+\cite{CohnElkies,CT,CohnTable} --- a numerical estimate: outside
 $d\in\{1,8,24\}$ the exact optimum of the Cohn--Elkies program is not
 known, and computed values are approximations from above
 \cite{CT}. Using our present dual point, strict non-sharpness would
@@ -682,9 +694,9 @@ dimension $36$ is that the \emph{weakness} of the known record makes
 the dual statement strong and the strict statement inaccessible: both
 our dual value and the two-point bound are large multiples of the
 record precisely because the record is weak; the residual gap between
-them reflects the suboptimality of our particular certificate (a
-finite search subspace and the choice $T=10$), not a property of the
-problem.
+them is plausibly due largely to our restricted search subspace and the
+choice $T=10$, although the exact value of $\delta_{\LP}(36)$ is not
+known.
 
 \paragraph{Dimension 40.} The same pipeline reaches $d=40$
 (weight $20$) in principle, with two new costs: the weight-$20$
@@ -873,6 +885,13 @@ sphere packing in dimensions 8 and 24}. arXiv:2604.10914.
 
 \bibitem{ConwaySloane} J.~H.~Conway and N.~J.~A.~Sloane,
 \emph{Sphere Packings, Lattices and Groups}, 3rd ed., Springer, 1999.
+
+\bibitem{DiamondShurman} F.~Diamond and J.~Shurman,
+\emph{A First Course in Modular Forms}, Grad. Texts in Math. \textbf{228},
+Springer, 2005.
+
+\bibitem{CohnTable} H.~Cohn, \emph{Sphere packing bounds} (online table),
+\texttt{https://cohn.mit.edu/sphere-packing/}, accessed July 2026.
 
 \end{thebibliography}
 
