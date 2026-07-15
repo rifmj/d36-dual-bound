@@ -5,6 +5,9 @@
 # basis selection via scipy.linalg.qr); they are NOT used in the exact rigor pass.
 #
 # Pinned to the versions the certificate was reproduced on (Python 3.11.15).
+# The exact/interval certification reproduces identically under mpmath 1.3.0 as well
+# (verify_certificate.py and d36_cs_certificate.py give the same certified C_w bounds);
+# the Arb (python-flint) re-verification of the interval solve is version-independent.
 sympy==1.14.0
 mpmath>=1.3.0
 numpy==2.4.6

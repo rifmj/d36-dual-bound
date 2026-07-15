@@ -243,7 +243,8 @@ B(g)\;=\;b_0\cdot\Bigl(\tfrac{2}{\sqrt N}\Bigr)^{d/2}\cdot
 \Bigl(\tfrac{\sqrt T}{2}\Bigr)^{d},
 \end{equation}
 so that $\delta_{\LP}(d)\ge B(g)$. Here $T$ is a free integer parameter
-(the number of forced initial zeros). We take $T=10$. As a consistency
+(the cutoff index: the $T-1$ coefficients $a_1,\dots,a_{T-1}$ are forced
+to vanish). We take $T=10$. As a consistency
 check of the normalization, our implementation of
 \eqref{eq:feas}--\eqref{eq:value} reproduces the published $d=12$
 values of \cite{CT} at both levels: $0.059782=1.6141\times$
@@ -447,7 +448,11 @@ c_E \;:=\; \min_{\gamma\mid24}c_E(\gamma)\;=\;c_E(3)
 \end{equation}
 and analogously $c_E^{(a)}=c_E^{(a)}(3)=5.0672217\cdot10^{-12}$ for
 $g$ (again the minimum over all eight classes). All sixteen constants
-are exact rationals; the table and \eqref{eq:cE} display truncations,
+are the $\zeta(17)$-guarded floors of \eqref{eq:guard} --- hence slightly
+below the raw leading Eisenstein coefficient
+$\kappa_{18}\sum_{\delta\mid\gamma}e_\delta/\delta^{17}$ of each class
+(the quantity tabulated in the verification receipt) --- and are exact
+rationals; the table and \eqref{eq:cE} display truncations,
 and the exact numerators/denominators are printed in the ancillary
 file \texttt{ancillary/guarded\_cE.txt} (output of
 \texttt{code/d36\_guarded\_cE.py}).
@@ -491,7 +496,9 @@ $a_7=3225992$ exactly.
 
 \begin{lemma}[lift-aware Deligne constant]\label{lem:liftaware}
 Let $S=\sum_{f,e}\lambda_{f,e}\,f(ez)\in S_k(\Gamma_0(N))$ with $f$
-normalized newforms. Then for all $n\ge1$,
+normalized newforms (each Galois orbit expanded into its individual
+complex embeddings, so that every $|\lambda_{f,e}|$ is the modulus of a
+single complex coordinate). Then for all $n\ge1$,
 \[
 |c_n|\;\le\;C_w\,\sigma_0(n)\,n^{(k-1)/2},
 \qquad
@@ -500,8 +507,11 @@ C_w\;=\;\sum_{f,e}\frac{|\lambda_{f,e}|}{e^{(k-1)/2}}.
 \end{lemma}
 
 \begin{proof}
-By Deligne's bound $|a_f(m)|\le\sigma_0(m)m^{(k-1)/2}$ for each
-normalized newform. The coefficient of $q^n$ in $f(ez)$ is $a_f(n/e)$
+By the divisor bound $|a_f(m)|\le\sigma_0(m)m^{(k-1)/2}$, valid for
+every $m\ge1$ and each normalized newform --- Deligne's estimate with
+the Hecke recursion at the unramified primes $p\nmid M$, and the
+standard newform bound $|a_f(p)|\le p^{(k-2)/2}\le\sigma_0(p)\,p^{(k-1)/2}$
+at the ramified primes $p\mid M$. The coefficient of $q^n$ in $f(ez)$ is $a_f(n/e)$
 if $e\mid n$ and $0$ otherwise, and for $e\mid n$,
 $\sigma_0(n/e)\le\sigma_0(n)$ and
 $(n/e)^{(k-1)/2}=n^{(k-1)/2}e^{-(k-1)/2}$. Summing over the pairs
@@ -639,8 +649,10 @@ $80$-dimensional $M_{20}(\Gamma_0(24))$, so the basis must be augmented
 is heavier ($\sigma_{19}$ growth). We have not completed a $d=40$
 certificate. We note that Remark~4.3 of \cite{Zhou} asserts that for
 $d=32$ and $d=40$ ``LP non-sharpness is established by other means'',
-without a supporting citation for the case $d=40$; as of July 2026 we
-have been unable to locate any published dual bound or non-sharpness
+attributing both to Cohn--Triantafillou; but \cite{CT} treats only
+$d\in\{12,16,20,28,32\}$ and does not address $d=40$ (and \cite{Zhou}'s
+own Table~1 marks the status at $d=40$ as ``expected''). As of July 2026
+we have been unable to locate any published dual bound or non-sharpness
 proof in dimension $40$. The
 modular-bootstrap analysis of \cite{AJCHdLT} (building on the sphere
 packing--quantum gravity correspondence of \cite{HMR}) rules out
